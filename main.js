@@ -17,6 +17,20 @@ $$("[data-ig]").forEach((el) => {
 });
 const guest = new URLSearchParams(location.search).get("to");
 if (guest) $("#guestName").textContent = guest.slice(0, 80);
+// write the guest's name in gold ink, one letter at a time, once the loader is gone
+{
+  const gn = $("#guestName");
+  const text = gn.textContent;
+  gn.textContent = "";
+  [...text].forEach((ch, i) => {
+    const s = document.createElement("span");
+    s.className = "gch";
+    s.style.setProperty("--i", i);
+    s.textContent = ch;
+    gn.append(s);
+  });
+  gn.setAttribute("aria-label", text);
+}
 
 /* ---------------- loader ---------------- */
 const loadStart = performance.now();
@@ -93,9 +107,21 @@ musicBtn.addEventListener("click", () => {
   else { music.pause(); musicBtn.classList.add("off"); }
 });
 
+/* ---------------- golden ripples when the doors open ---------------- */
+function gongRipple() {
+  [0, 260, 560].forEach((delay) => setTimeout(() => {
+    const r = document.createElement("span");
+    r.className = "gong-ring";
+    document.body.append(r);
+    r.addEventListener("animationend", () => r.remove());
+  }, delay));
+}
+
 /* ---------------- open: the Rumah Bolon doors swing open ---------------- */
 $("#openBtn").addEventListener("click", () => {
   const cover = $("#cover");
+  navigator.vibrate?.([40, 60, 90]);
+  if (!STILL) { gongRipple(); cover.classList.add("shake"); }
   cover.classList.add("open");
   scrollTo(0, 0);
   music.load();
@@ -134,7 +160,7 @@ const title = `Pernikahan ${C.groom.nick} & ${C.bride.nick}`;
 const icons = ["✝", "❖"];
 $("#eventList").append(...C.events.map((e, i) => {
   const el = document.createElement("article");
-  el.className = "event reveal";
+  el.className = "event reveal glow";
   const gcal = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`${title} · ${e.title}`)}&dates=${icsDate(e.start)}/${icsDate(e.end)}&location=${encodeURIComponent(`${e.place}, ${e.address}`)}`;
   el.innerHTML = `<span class="ev-icon"></span><h3></h3><p class="when"></p><p class="time"></p><p class="place"></p><p class="addr"></p>
     <div class="actions"><a class="btn btn-red" target="_blank" rel="noopener">Buka Maps</a>
@@ -161,6 +187,14 @@ $("#eventList").append(...C.events.map((e, i) => {
   });
   return el;
 }));
+// a golden route with a travelling light between the venues
+$$("#eventList .event").slice(1).forEach((card) => {
+  const route = document.createElement("div");
+  route.className = "route";
+  route.setAttribute("aria-hidden", "true");
+  route.innerHTML = "<span></span>";
+  card.before(route);
+});
 
 /* ---------------- lightbox ---------------- */
 const photos = ["cover", "awal", "bab1", "bab2", "bab3", "bab4", "bab5", "bab6", "bab7"].map((n) => `assets/img/${n}.jpg`);
@@ -248,16 +282,39 @@ $("#qrisDl").href = C.qris;
 const zoomQris = () => openLb(0, [C.qris]);
 $("#qrisOpen").onclick = zoomQris;
 $("#qrisZoom").onclick = zoomQris;
-$("#envelope").addEventListener("click", (e) => {
-  const env = e.currentTarget;
+// The envelope is shown sealed first, then opens by itself once it has been fully on screen
+// for a moment, so guests see it open and nobody has to know to tap it. Scrolling away
+// closes it again so the opening plays each time; tapping replays it.
+const env = $("#envelope");
+let envT;
+function openEnvelope() {
   if (env.classList.contains("open")) return;
   env.classList.add("open");
   env.setAttribute("aria-expanded", "true");
-  setTimeout(() => $("#amplop").classList.add("opened"), 900);
-  sky.burst(5);
-  const r = env.getBoundingClientRect();
-  sparkBurst(r.left + r.width / 2, r.top + r.height * 0.6, 26);
+  setTimeout(() => $("#amplop").classList.add("opened"), 1800);
+  setTimeout(() => {
+    sky.burst(4);
+    const r = env.getBoundingClientRect();
+    sparkBurst(r.left + r.width / 2, r.top + r.height * 0.6, 26);
+  }, 250);
+}
+function closeEnvelope() {
+  env.classList.remove("open");
+  env.setAttribute("aria-expanded", "false");
+}
+env.addEventListener("click", () => {
+  clearTimeout(envT);
+  if (!env.classList.contains("open")) return openEnvelope();
+  closeEnvelope();
+  envT = setTimeout(openEnvelope, 1500);
 });
+new IntersectionObserver(([en]) => {
+  clearTimeout(envT);
+  if (en.isIntersecting) envT = setTimeout(openEnvelope, 1000);
+  else closeEnvelope();
+}, { threshold: 0.8 }).observe(env);
+$("#giftMethod").append(...["QRIS", ...C.banks.map((b) => b.bank), ...(C.ewallets || []).map((w) => w.name), ...(C.giftAddress ? ["Kado"] : [])]
+  .map((m) => Object.assign(document.createElement("option"), { value: m, textContent: m })));
 const accs = [
   ...C.banks.map((b) => ({ title: b.bank, no: b.number, holder: b.holder, label: "Nomor rekening" })),
   ...(C.ewallets || []).map((w) => ({ title: w.name, no: w.number, holder: w.holder, label: "Nomor" })),
@@ -265,7 +322,7 @@ const accs = [
 if (C.giftAddress) accs.push({ title: "Kirim Kado", no: "", holder: C.giftAddress, label: "Alamat" });
 $("#accounts").append(...accs.map((a) => {
   const el = document.createElement("div");
-  el.className = "acc";
+  el.className = "acc glow";
   el.innerHTML = `<span class="bank"></span><span class="no"></span><span class="holder"></span><button class="btn btn-ghost" type="button">Salin</button>`;
   $(".bank", el).textContent = a.title;
   $(".no", el).textContent = a.no;
@@ -301,17 +358,19 @@ async function loadWishes() {
 loadWishes();
 if (guest) $("#rsvpName").value = guest.slice(0, 60);
 
+if (guest) $("#giftName").value = guest.slice(0, 60);
+
+// shared by the RSVP form and the gift form: both end up in the guest book
 let lastSend = 0;
-$("#rsvpForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const f = e.target;
-  const d = Object.fromEntries(new FormData(f));
+async function sendWish(form, extra, thanks) {
+  const d = Object.fromEntries(new FormData(form));
   if (d.website) return; // bot
   if (!d.nama.trim() || !d.ucapan.trim()) return toast("Nama dan ucapan wajib diisi");
   if (Date.now() - lastSend < 15000) return toast("Tunggu sebentar ya 🙏");
   lastSend = Date.now();
-  const entry = { nama: d.nama.trim(), hadir: d.hadir, jumlah: d.jumlah, ucapan: d.ucapan.trim(), waktu: new Date().toISOString() };
-  const btn = $("button[type=submit]", f);
+  const entry = { nama: d.nama.trim(), ucapan: d.ucapan.trim(), waktu: new Date().toISOString(), ...extra(d) };
+  const btn = $("button[type=submit]", form);
+  const label = btn.innerHTML;
   btn.disabled = true;
   btn.textContent = "Mengirim…";
   try {
@@ -319,25 +378,45 @@ $("#rsvpForm").addEventListener("submit", async (e) => {
       await fetch(C.sheetUrl, { method: "POST", mode: "no-cors", body: new URLSearchParams(entry) });
       setTimeout(loadWishes, 1500);
     }
-    try { localStorage.setItem(LS, JSON.stringify([...local(), entry])); } catch {}
+    const { nominal, ...shown } = entry; // the amount never goes into the public guest book
+    try { localStorage.setItem(LS, JSON.stringify([...local(), shown])); } catch {}
     renderWishes(local());
-    f.ucapan.value = "";
-    toast("Terima kasih atas doanya!");
+    form.ucapan.value = "";
+    if (form.nominal) form.nominal.value = "";
+    toast(thanks);
     const r = btn.getBoundingClientRect();
     sparkBurst(r.left + r.width / 2, r.top, 22);
   } catch {
     toast("Gagal mengirim, coba lagi");
   } finally {
     btn.disabled = false;
-    btn.textContent = "Kirim";
+    btn.innerHTML = label;
   }
+}
+$("#rsvpForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  sendWish(e.target, (d) => ({ jenis: "RSVP", hadir: d.hadir, jumlah: d.jumlah }), "Terima kasih atas doanya!");
+});
+$("#giftForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  sendWish(e.target, (d) => ({ jenis: "Tanda kasih", hadir: "Tanda kasih", metode: d.metode, nominal: d.nominal.trim() }),
+    "Terima kasih! Ucapan Anda tampil di Buku Ucapan");
 });
 
 /* ---------------- reveal on scroll ---------------- */
 const io = new IntersectionObserver((entries) => {
   entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
 }, { rootMargin: "0px 0px -12% 0px" });
-$$(".reveal, .chapter, .split, .wipe").forEach((el) => io.observe(el));
+$$(".reveal, .chapter, .split, .wipe, .ornament, .gorga-line").forEach((el) => io.observe(el));
+
+/* ---------------- gold glare follows the pointer on cards ---------------- */
+addEventListener("pointermove", (e) => {
+  const card = e.target.closest?.(".glow");
+  if (!card) return;
+  const r = card.getBoundingClientRect();
+  card.style.setProperty("--gx", `${((e.clientX - r.left) / r.width) * 100}%`);
+  card.style.setProperty("--gy", `${((e.clientY - r.top) / r.height) * 100}%`);
+}, { passive: true });
 
 /* ---------------- braids: three strands, one cord ---------------- */
 const NS = "http://www.w3.org/2000/svg";
@@ -407,7 +486,9 @@ const tilts = $$(".tilt");
 const nights = $$("[data-night]");
 const verses = $$(".verse");
 const bar = $("#progress");
-let lastY = scrollY, ticking = false;
+const celestial = $("#celestial");
+const root = document.documentElement;
+let lastY = scrollY, ticking = false, skewT;
 let night = 1;
 
 function onScroll() {
@@ -449,6 +530,26 @@ function onScroll() {
 
   const sr = story.getBoundingClientRect();
   setStoryBraid(clamp01((vh * 0.65 - sr.top - braidTop) / (sr.height - braidTop - 64)));
+
+  // the light over the story travels from evening sun to moon as the chapters pass
+  if (sr.bottom > 0 && sr.top < vh) {
+    const p = clamp01(-sr.top / (sr.height - vh));
+    const x = innerWidth * (0.85 - 0.7 * p);
+    const y = -sr.top + vh * (0.14 - 0.08 * Math.sin(p * Math.PI)); // a gentle arc high in the sky
+    celestial.style.setProperty("--x", `${x.toFixed(0)}px`);
+    celestial.style.setProperty("--y", `${y.toFixed(0)}px`);
+    const warm = 1 - p;
+    celestial.style.setProperty("--c1", `rgb(${255}, ${Math.round(213 + 30 * p)}, ${Math.round(138 + 100 * p)})`);
+    celestial.style.setProperty("--c2", `rgba(${Math.round(255 - 70 * p)}, ${Math.round(170 + 40 * p)}, ${Math.round(90 + 150 * p)}, ${(0.3 + 0.15 * warm).toFixed(2)})`);
+  }
+
+  // photos lean with scroll speed, then settle
+  const v = scrollY - lastY;
+  if (!STILL) {
+    root.style.setProperty("--skew", `${Math.max(-3, Math.min(3, v * 0.06)).toFixed(2)}deg`);
+    clearTimeout(skewT);
+    skewT = setTimeout(() => root.style.setProperty("--skew", "0deg"), 120);
+  }
 
   const max = document.documentElement.scrollHeight - vh;
   bar.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
@@ -575,6 +676,8 @@ function makeDust() {
             c: GOLDS[(Math.random() * GOLDS.length) | 0],
             ph: Math.random() * 6.28,
             k: 0.012 + Math.random() * 0.02,
+            ox: (Math.random() - 0.5) * w * 1.2,
+            oy: -(Math.random() * 0.8 + 0.2) * h * 0.9,
           });
         }
       }
@@ -586,9 +689,11 @@ function makeDust() {
     if (!visible) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const R = 70, R2 = R * R;
+    // as the hero scrolls away the dust lifts into the sky, and gathers again on the way back
+    const scatter = clamp01(-hero.getBoundingClientRect().top / (h * 0.7)) ** 1.6;
     for (const p of P) {
-      p.vx += (p.tx - p.x) * p.k;
-      p.vy += (p.ty - p.y) * p.k;
+      p.vx += (p.tx + p.ox * scatter - p.x) * p.k;
+      p.vy += (p.ty + p.oy * scatter - p.y) * p.k;
       const dx = p.x - ptr.x, dy = p.y - ptr.y, d2 = dx * dx + dy * dy;
       if (d2 < R2) {
         const d = Math.sqrt(d2) || 1, f = (1 - d / R) * 7;
@@ -662,7 +767,7 @@ function makeSky() {
   geo.scale(0.22, 0.22, 0.22);
   const mat = new THREE.MeshLambertMaterial({ color: 0xffffff, emissive: 0x3a2a24, side: THREE.DoubleSide, transparent: true, opacity: 0.92 });
   const petals = new THREE.InstancedMesh(geo, mat, PETALS);
-  const hues = [0xfff8ef, 0xfff8ef, 0xfff8ef, 0xc0281f, 0xc0281f, 0xd9b25a];
+  const hues = [0xfff8ef, 0xfff8ef, 0xfff8ef, 0xa4232c, 0xa4232c, 0xd9b25a];
   const tint = new THREE.Color();
   for (let i = 0; i < PETALS; i++) petals.setColorAt(i, tint.setHex(hues[i % hues.length]));
   scene.add(petals);

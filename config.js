@@ -6,15 +6,16 @@
 window.WEDDING = {
   // ---------- Mempelai ----------
   groom: {
-    nick: "Jov",
-    name: "Joshua Joviando",                        // ← GANTI (tambahkan marga)
-    parents: "Putra dari Bapak [Nama Ayah] & Ibu [Nama Ibu]", // ← GANTI
+    nick: "Joshua",
+    name: "Joshua Joviando Sinaga, S.E., S.H., M.M.",
+    // \n = pindah baris
+    parents: "Putra dari\nSt. Ir. Jhon Hardman Sinaga\n& St. Irawaty Devy Rosa Saragih",
     instagram: "",                                  // contoh: "joviando"
   },
   bride: {
     nick: "May",
-    name: "May [Nama Lengkap]",                     // ← GANTI (tambahkan marga)
-    parents: "Putri dari Bapak [Nama Ayah] & Ibu [Nama Ibu]", // ← GANTI
+    name: "May Noviarta Purba, S.E.",
+    parents: "Putri dari\nBapak Arie Marison Purba (†)\n& Ibu Elisa Sinaga",
     instagram: "",
   },
 
@@ -49,11 +50,11 @@ window.WEDDING = {
 
   // ---------- Amplop digital ----------
   banks: [
-    { bank: "BCA", number: "0000000000", holder: "Joshua Joviando" },     // ← GANTI
-    { bank: "BRI", number: "0000000000000", holder: "May [Nama Lengkap]" }, // ← GANTI
+    { bank: "BCA", number: "0000000000", holder: "Joshua Joviando Sinaga" },  // ← GANTI nomor
+    { bank: "BRI", number: "0000000000000", holder: "May Noviarta Purba" },   // ← GANTI nomor
   ],
   ewallets: [
-    { name: "GoPay", number: "08xx-xxxx-xxxx", holder: "Joshua Joviando" }, // ← GANTI / hapus
+    { name: "GoPay", number: "08xx-xxxx-xxxx", holder: "Joshua Joviando Sinaga" }, // ← GANTI / hapus
   ],
   // Simpan gambar QRIS dari aplikasi bank/e-wallet ke assets/qris.png lalu ganti baris ini
   qris: "assets/qris-placeholder.svg",              // ← GANTI jadi "assets/qris.png"
@@ -65,7 +66,7 @@ window.WEDDING = {
   sheetUrl: "",
 
   // ---------- Musik ----------
-  // Taruh lagu di assets/music.mp3 (misalnya lagu Simalungun favorit keluarga).
+  // Taruh lagu di assets/background.mp3. Musik mulai saat tamu menekan "Buka Undangan".
   // Kalau file tidak ada, tombol musik otomatis disembunyikan.
-  music: "assets/music.mp3",
+  music: "assets/background.mp3",
 };

@@ -1,5 +1,6 @@
-// Google Apps Script untuk menyimpan RSVP & ucapan ke Google Sheets.
+// Google Apps Script untuk menyimpan RSVP, ucapan & tanda kasih ke Google Sheets.
 // Cara pasang ada di PANDUAN.md.
+// Kolom "metode" dan "nominal" hanya tersimpan di sheet ini, tidak pernah dikirim ke website.
 
 const SHEET = "Ucapan";
 
@@ -8,7 +9,7 @@ function sheet_() {
   let sh = ss.getSheetByName(SHEET);
   if (!sh) {
     sh = ss.insertSheet(SHEET);
-    sh.appendRow(["waktu", "nama", "hadir", "jumlah", "ucapan"]);
+    sh.appendRow(["waktu", "nama", "hadir", "jumlah", "ucapan", "jenis", "metode", "nominal"]);
   }
   return sh;
 }
@@ -28,13 +29,17 @@ function doPost(e) {
   if (cache.get(nama)) return out_({ ok: false, reason: "too-fast" });
   cache.put(nama, "1", 60);
 
-  sheet_().appendRow([new Date(), nama, clean_(p.hadir, 20), clean_(p.jumlah, 2), ucapan]);
+  sheet_().appendRow([
+    new Date(), nama, clean_(p.hadir, 20), clean_(p.jumlah, 2), ucapan,
+    clean_(p.jenis, 20), clean_(p.metode, 30), clean_(p.nominal, 20),
+  ]);
   return out_({ ok: true });
 }
 
 function doGet() {
   const rows = sheet_().getDataRange().getValues().slice(1);
-  const list = rows.slice(-200).map((r) => ({ waktu: r[0], nama: r[1], hadir: r[2], jumlah: r[3], ucapan: r[4] }));
+  // hanya nama, status & ucapan yang dikirim ke website
+  const list = rows.slice(-200).map((r) => ({ nama: r[1], hadir: r[2], ucapan: r[4] }));
   return out_(list);
 }
 
