@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Jov & May · Undangan Pernikahan</title>
+  <meta name="description" content="Horas banta haganupan! Undangan pernikahan Jov & May, Sabtu 13 November 2027." />
+  <meta name="theme-color" content="#0e0909" />
+  <meta property="og:title" content="Undangan Pernikahan Jov & May" />
+  <meta property="og:description" content="Horas banta haganupan! Dengan sukacita kami mengundang Anda di hari bahagia kami, 13 November 2027." />
+  <meta property="og:image" content="assets/img/og.jpg" />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="assets/img/cover.jpg" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
+</head>
+<body class="locked">
+  <!-- ============ LOADER: monogram drawn in gold ============ -->
+  <div id="loader" class="loader" aria-hidden="true">
+    <svg viewBox="0 0 220 120" class="mono">
+      <defs>
+        <linearGradient id="goldG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#f6e3a8" /><stop offset=".5" stop-color="#c9a14a" /><stop offset="1" stop-color="#8a6a22" />
+        </linearGradient>
+      </defs>
+      <text x="110" y="82" text-anchor="middle">J &amp; M</text>
+    </svg>
+    <p>13 · 11 · 2027</p>
+  </div>
+
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+  <!-- ============ COVER: Rumah Bolon doors ============ -->
+  <section id="cover" class="cover">
+    <div class="door left"><div class="door-img"></div><i class="door-edge"></i></div>
+    <div class="door right"><div class="door-img"></div><i class="door-edge"></i></div>
+    <div class="door-light"></div>
+    <div class="cover-shade"></div>
+    <div class="cover-inner">
+      <div class="cover-top">
+        <p class="eyebrow">Undangan Pernikahan</p>
+        <h1 class="names foil"><span data-nick="groom">Jov</span><em>&amp;</em><span data-nick="bride">May</span></h1>
+        <p class="cover-tag">Horas banta haganupan!</p>
+      </div>
+      <div class="cover-bottom">
+        <div class="guest">
+          <span>Kepada Yth.</span>
+          <strong id="guestName">Bapak/Ibu/Saudara/i</strong>
+          <small>Mohon maaf bila ada kesalahan penulisan nama</small>
+        </div>
+        <button id="openBtn" class="btn btn-gold"><span>Buka Undangan</span></button>
+      </div>
+    </div>
+  </section>
+
+  <main id="main">
+    <!-- ============ HERO: names from gold dust ============ -->
+    <section class="hero" id="hero" data-night>
+      <canvas id="dust" aria-hidden="true"></canvas>
+      <div class="hero-inner">
+        <p class="horas reveal">Horas!</p>
+        <h2 class="sr-only"><span data-nick="groom">Jov</span> &amp; <span data-nick="bride">May</span></h2>
+        <div class="dust-space" aria-hidden="true"></div>
+        <div class="gorga-line reveal" aria-hidden="true"></div>
+        <p class="hero-date reveal" data-bind="dateLabel"></p>
+        <div class="countdown reveal" id="countdown">
+          <div><b data-cd="d">0</b><span>Hari</span></div>
+          <div><b data-cd="h">0</b><span>Jam</span></div>
+          <div><b data-cd="m">0</b><span>Menit</span></div>
+          <div><b data-cd="s">0</b><span>Detik</span></div>
+        </div>
+        <p class="touch-hint reveal">sentuh namanya ✦</p>
+      </div>
+    </section>
+
+    <!-- ============ AYAT: Kejadian 2:24 ============ -->
+    <section class="verse" data-night>
+      <div class="verse-stick">
+        <span class="verse-mark" aria-hidden="true">✦</span>
+        <p class="scrub">Sebab itu seorang laki-laki akan meninggalkan ayahnya dan ibunya dan bersatu dengan isterinya, sehingga keduanya menjadi satu daging.</p>
+        <cite>Kejadian 2:24</cite>
+      </div>
+    </section>
+
+    <!-- ============ PEMBUKA ============ -->
+    <section class="intro paper">
+      <div class="ornament" aria-hidden="true"></div>
+      <div class="intro-grid">
+        <figure class="frame tilt wipe">
+          <img src="assets/img/awal.jpg" alt="Jov dan May tertawa bersama di warung" loading="lazy" />
+        </figure>
+        <div class="intro-text reveal">
+          <p class="eyebrow dark">Horas banta haganupan</p>
+          <h2>Dari dua jalan yang berbeda,<br /><em>kami pulang ke satu rumah.</em></h2>
+          <p class="lead">Dengan sukacita dan atas berkat Tuhan, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberi doa restu di hari pernikahan kami.</p>
+          <blockquote>
+            “Demikianlah mereka bukan lagi dua, melainkan satu. Karena itu, apa yang telah dipersatukan Allah, tidak boleh diceraikan manusia.”
+            <cite>Matius 19:6</cite>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MEMPELAI ============ -->
+    <section class="couple paper alt">
+      <p class="eyebrow dark center reveal">Mempelai</p>
+      <h2 class="center split">Dua hati, satu janji</h2>
+      <div class="couple-grid">
+        <article class="person reveal">
+          <div class="arch"><div class="person-photo"><img src="assets/img/jov.jpg" alt="Jov berpakaian adat Simalungun dengan gotong" loading="lazy" /></div></div>
+          <h3 class="foil-dark" data-bind="groom.name"></h3>
+          <p data-bind="groom.parents"></p>
+          <a class="ig" data-ig="groom" target="_blank" rel="noopener"></a>
+        </article>
+        <div class="amp reveal" aria-hidden="true">&amp;</div>
+        <article class="person reveal">
+          <div class="arch"><div class="person-photo"><img src="assets/img/may.jpg" alt="May berpakaian adat Simalungun dengan bulang" loading="lazy" /></div></div>
+          <h3 class="foil-dark" data-bind="bride.name"></h3>
+          <p data-bind="bride.parents"></p>
+          <a class="ig" data-ig="bride" target="_blank" rel="noopener"></a>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ AYAT: Rut 1:16 ============ -->
+    <section class="verse" data-night>
+      <div class="verse-stick">
+        <span class="verse-mark" aria-hidden="true">✦</span>
+        <p class="scrub">Ke mana engkau pergi, ke situ jugalah aku pergi, dan di mana engkau bermalam, di situ jugalah aku bermalam.</p>
+        <cite>Rut 1:16</cite>
+      </div>
+    </section>
+
+    <!-- ============ KISAH ============ -->
+    <section class="story" id="story">
+      <header class="story-head reveal">
+        <p class="eyebrow">Kisah Kami</p>
+        <h2>Tujuh bab menuju Rumah Bolon</h2>
+      </header>
+      <svg class="braid-thread" id="storyBraid" aria-hidden="true"></svg>
+
+      <article class="chapter">
+        <figure class="frame wide tilt wipe"><img src="assets/img/bab1.jpg" alt="Jov dan May di dua kota berbeda saat senja" loading="lazy" /></figure>
+        <div class="chapter-text">
+          <span class="num">01</span><p class="kicker">Sebelum kita</p>
+          <h3>Dua Kota</h3>
+          <p>Kami tumbuh berjauhan tanpa saling tahu. Tapi langit senja yang kami pandang ternyata sama.</p>
+          <p class="mini-verse">“Untuk segala sesuatu ada masanya.” <span>Pengkhotbah 3:1</span></p>
+        </div>
+      </article>
+
+      <article class="chapter flip">
+        <figure class="frame tilt wipe"><img src="assets/img/bab2.jpg" alt="Jov dan May pertama kali bertemu di halaman gereja" loading="lazy" /></figure>
+        <div class="chapter-text">
+          <span class="num">02</span><p class="kicker" data-bind="firstMet"></p>
+          <h3>Bertemu</h3>
+          <p>Di halaman gereja, dengan Warta Jemaat masih di tangan, kami bertukar senyum canggung yang pertama. Hari itu, Tuhan mulai menulis cerita kami.</p>
+          <p class="mini-verse">“Kita mengasihi, karena Allah lebih dahulu mengasihi kita.” <span>1 Yohanes 4:19</span></p>
+        </div>
+      </article>
+
+      <article class="chapter">
+        <figure class="frame tilt wipe"><img src="assets/img/bab3.jpg" alt="Jov dan May makan malam di warung tenda" loading="lazy" /></figure>
+        <div class="chapter-text">
+          <span class="num">03</span><p class="kicker">Warung tenda</p>
+          <h3>Dekat</h3>
+          <p>Obrolan singkat jadi makan malam di warung tenda, dengan sepiring bihun goreng dan tawa yang tak habis-habis.</p>
+          <p class="mini-verse">“Hati yang gembira adalah obat yang manjur.” <span>Amsal 17:22</span></p>
+        </div>
+      </article>
+
+      <article class="chapter flip">
+        <figure class="frame wide tilt wipe"><img src="assets/img/bab4.jpg" alt="Kolase Jov dan May memasak, berbagi payung, menonton film dan merayakan ulang tahun" loading="lazy" /></figure>
+        <div class="chapter-text">
+          <span class="num">04</span><p class="kicker">2020 — sekarang</p>
+          <h3>Bersama</h3>
+          <p>Sejak hari itu, setiap musim kami lewati berdua: masak di dapur kecil, berbagi satu payung saat hujan, dan merayakan hal-hal sederhana.</p>
+          <p class="mini-verse">“Ia menutupi segala sesuatu, percaya segala sesuatu, mengharapkan segala sesuatu, sabar menanggung segala sesuatu.” <span>1 Korintus 13:7</span></p>
+        </div>
+      </article>
+
+      <article class="chapter">
+        <figure class="frame tall tilt wipe"><img src="assets/img/bab5.jpg" alt="May berlari menyambut Jov di jalan desa Simalungun" loading="lazy" /></figure>
+        <div class="chapter-text">
+          <span class="num">05</span><p class="kicker">Tanoh Simalungun</p>
+          <h3>Pulang</h3>
+          <p>Di antara bukit hijau Simalungun, kami sama-sama pulang ke tanah asal kami, ke rumah yang sudah lama menunggu.</p>
+          <p class="mini-verse">“Bangsamulah bangsaku dan Allahmulah Allahku.” <span>Rut 1:16</span></p>
+        </div>
+      </article>
+
+      <article class="chapter flip">
+        <figure class="frame tilt wipe"><img src="assets/img/bab6.jpg" alt="Jov melamar May di dermaga Danau Toba" loading="lazy" /></figure>
+        <div class="chapter-text">
+          <span class="num">06</span><p class="kicker">Danau Toba</p>
+          <h3>Janji</h3>
+          <p>Di dermaga tepi Danau Toba, saat langit mulai jingga, satu pertanyaan dijawab dengan air mata bahagia.</p>
+          <p class="mini-verse">“Air yang banyak tak dapat memadamkan cinta, sungai-sungai tak dapat menghanyutkannya.” <span>Kidung Agung 8:7</span></p>
+        </div>
+      </article>
+
+      <article class="chapter">
+        <figure class="frame tilt wipe"><img src="assets/img/bab7.jpg" alt="Jov dan May berpakaian adat Simalungun di depan Rumah Bolon" loading="lazy" /></figure>
+        <div class="chapter-text">
+          <span class="num">07</span><p class="kicker">Adat Simalungun</p>
+          <h3>Rumah Bolon</h3>
+          <p>Dengan gotong dan bulang di kepala, hiou di bahu, dan restu orang tua di hati, kami melangkah bersama.</p>
+          <p class="mini-verse">“Jikalau bukan TUHAN yang membangun rumah, sia-sialah usaha orang yang membangunnya.” <span>Mazmur 127:1</span></p>
+          <p class="quote-line">Habonaron do bona.</p>
+        </div>
+      </article>
+    </section>
+
+    <!-- ============ TALI TIGA LEMBAR: Pengkhotbah 4:12 ============ -->
+    <section class="cord" id="cord" data-night>
+      <div class="cord-stick">
+        <p class="eyebrow">Pengkhotbah 4:12</p>
+        <div class="cord-stage">
+          <svg id="cordSvg" viewBox="0 0 300 420" aria-hidden="true"></svg>
+          <span class="cord-label l1">Jov</span>
+          <span class="cord-label l2">Tuhan</span>
+          <span class="cord-label l3">May</span>
+        </div>
+        <p class="cord-text">“Tali tiga lembar<br /><em>tak mudah diputuskan.”</em></p>
+      </div>
+    </section>
+
+    <!-- ============ ACARA ============ -->
+    <section class="events paper" id="acara">
+      <div class="ornament" aria-hidden="true"></div>
+      <p class="eyebrow dark center reveal">Waktu &amp; Tempat</p>
+      <h2 class="center split">Hari bahagia kami</h2>
+      <div class="event-grid" id="eventList"></div>
+    </section>
+
+    <!-- ============ AYAT: 1 Korintus 13:4 ============ -->
+    <section class="verse" data-night>
+      <div class="verse-stick">
+        <span class="verse-mark" aria-hidden="true">✦</span>
+        <p class="scrub">Kasih itu sabar; kasih itu murah hati; ia tidak cemburu. Ia tidak memegahkan diri dan tidak sombong.</p>
+        <cite>1 Korintus 13:4</cite>
+      </div>
+    </section>
+
+    <!-- ============ GALERI: 3D ring ============ -->
+    <section class="gallery" id="galeri" data-night>
+      <p class="eyebrow center reveal">Galeri</p>
+      <h2 class="center split">Potongan cerita</h2>
+      <p class="center sub reveal">Geser untuk memutar · ketuk untuk memperbesar</p>
+      <div class="ring-stage" id="ringStage">
+        <div class="ring" id="ring"></div>
+      </div>
+    </section>
+
+    <!-- ============ RSVP ============ -->
+    <section class="rsvp paper alt" id="rsvp">
+      <div class="ornament" aria-hidden="true"></div>
+      <p class="eyebrow dark center reveal">RSVP &amp; Ucapan</p>
+      <h2 class="center split">Kirim doa untuk kami</h2>
+      <form id="rsvpForm" class="card form reveal" novalidate>
+        <label>Nama<input name="nama" id="rsvpName" required maxlength="60" autocomplete="name" /></label>
+        <div class="row">
+          <label>Kehadiran
+            <select name="hadir" required>
+              <option value="Hadir">Hadir</option>
+              <option value="Tidak hadir">Maaf, tidak bisa hadir</option>
+              <option value="Belum pasti">Belum pasti</option>
+            </select>
+          </label>
+          <label>Jumlah tamu
+            <select name="jumlah">
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+          </label>
+        </div>
+        <label>Ucapan &amp; doa<textarea name="ucapan" rows="4" maxlength="500" required></textarea></label>
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <button class="btn btn-red" type="submit">Kirim</button>
+      </form>
+      <div class="wishes" id="wishes" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ AMPLOP: red envelope with gold seal ============ -->
+    <section class="gift" id="amplop" data-night>
+      <p class="eyebrow center reveal">Amplop Digital</p>
+      <h2 class="center split">Tanda kasih</h2>
+      <p class="center sub reveal">Doa restu Anda adalah hadiah terindah. Namun bila ingin memberi tanda kasih, ketuk amplop di bawah.</p>
+
+      <button class="envelope reveal" id="envelope" aria-label="Buka amplop" aria-expanded="false">
+        <span class="env-back"></span>
+        <span class="env-card">
+          <span class="env-card-title">Tanda Kasih</span>
+          <span class="env-card-sub">untuk Jov &amp; May</span>
+        </span>
+        <span class="env-pocket"></span>
+        <span class="env-flap"></span>
+        <span class="env-seal">J&amp;M</span>
+      </button>
+
+      <div class="gift-grid" id="giftGrid">
+        <div class="qris-card">
+          <p class="label">QRIS · semua bank &amp; e-wallet</p>
+          <button class="qris-img" id="qrisOpen" aria-label="Perbesar QRIS"><img id="qrisImg" alt="Kode QRIS" /></button>
+          <div class="qris-actions">
+            <button class="btn btn-ghost" id="qrisZoom">Perbesar</button>
+            <a class="btn btn-ghost" id="qrisDl" download="QRIS-Jov-May">Unduh</a>
+          </div>
+        </div>
+        <div class="accounts" id="accounts"></div>
+      </div>
+    </section>
+
+    <!-- ============ AYAT: Kolose 3:14 ============ -->
+    <section class="verse short" data-night>
+      <div class="verse-stick">
+        <span class="verse-mark" aria-hidden="true">✦</span>
+        <p class="scrub">Dan di atas semuanya itu: kenakanlah kasih, sebagai pengikat yang mempersatukan dan menyempurnakan.</p>
+        <cite>Kolose 3:14</cite>
+      </div>
+    </section>
+
+    <!-- ============ PENUTUP: lanterns of prayer ============ -->
+    <section class="closing" id="closing" data-night>
+      <img class="closing-bg" src="assets/img/bab7.jpg" alt="" loading="lazy" />
+      <div class="lanterns" id="lanterns" aria-hidden="true"></div>
+      <div class="closing-inner reveal">
+        <p class="eyebrow">Diatei tupa</p>
+        <h2>Terima kasih atas doa dan restunya</h2>
+        <p>Kehadiran Anda melengkapi kebahagiaan kami.</p>
+        <div class="gorga-line" aria-hidden="true"></div>
+        <h3 class="names foil"><span data-nick="groom">Jov</span><em>&amp;</em><span data-nick="bride">May</span></h3>
+        <p class="horas-3">Horas! Horas! Horas!</p>
+        <p class="lantern-hint">Ketuk layar untuk menerbangkan lampion doa</p>
+      </div>
+      <footer class="foot">Jov &amp; May · 13 · 11 · 2027</footer>
+    </section>
+  </main>
+
+  <!-- lightbox -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lb-close" aria-label="Tutup">×</button>
+    <button class="lb-prev" aria-label="Sebelumnya">‹</button>
+    <img id="lbImg" alt="" />
+    <button class="lb-next" aria-label="Berikutnya">›</button>
+  </div>
+
+  <button class="music" id="musicBtn" aria-label="Musik" hidden><span></span><span></span><span></span></button>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
